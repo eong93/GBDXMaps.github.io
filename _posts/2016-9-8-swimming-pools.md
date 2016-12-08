@@ -132,7 +132,7 @@ In training our model, we can set optional hyper-parameters. See the [docs](http
 ```python
 train_task.inputs.nb_epoch = '30'
 train_task.inputs.nb_epoch_2 = '5'
-train_task.inputs.train_size = '4500'
+train_task.inputs.train_size = '5000'
 train_task.inputs.train_size_2 = '2500'
 train_task.inputs.test_size = '1000'
 train_task.inputs.bit_depth = '8'         # Provided imagery is dra'd
