@@ -326,7 +326,7 @@ wf.execute()
 ```
 
 The outputs will be saved under platform-stories/trial-runs/random_str within your bucket/prefix,
-where random_str is random string identifier. Here is the [entire workflow](https://github.com/PlatformStories/coastal-change/blob/master/workflow.py).
+where random_str is a random string identifier. Here is the [entire workflow](https://github.com/PlatformStories/notebooks/blob/master/Detecting%20and%20measuring%20coastal%20change.ipynb).
 
 # Discussion
 
