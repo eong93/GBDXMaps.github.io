@@ -576,7 +576,7 @@ Congratulations, you have just registered hello-gbdx! You can run it with sample
 ```python
 from gbdxtools import Interface
 from os.path import join
-import string, random
+import uuid
 gbdx = Interface()
 
 # specify S3 location of input files
@@ -595,8 +595,8 @@ hello_task.inputs.message = 'This is my message!'
 workflow = gbdx.Workflow([hello_task])
 
 # save contents of data_out in platform-stories/trial-runs/random_str within your bucket/prefix
-output_str = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(20))
-output_location = join('platform-stories/trial-runs', output_str)
+random_str = str(uuid.uuid4())
+output_location = join('platform-stories/trial-runs', random_str)
 workflow.savedata(hello_task.outputs.data_out, output_location)
 ```
 
@@ -973,7 +973,7 @@ Open an iPython terminal, create a GBDX interface and specify the task input loc
 ```python
 from gbdxtools import Interface
 from os.path import join
-import random, string
+import uuid
 
 gbdx = Interface()
 
@@ -994,7 +994,7 @@ Create a single-task workflow object and define where the output data should be 
 
 ```python
 # set output location to platform-stories/trial-runs/random_str within your bucket/prefix
-random_str = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(20))
+random_str = str(uuid.uuid4())
 output_location = join('platform-stories/trial-runs', random_str)
 
 workflow = gbdx.Workflow([rf_task])
@@ -1592,7 +1592,7 @@ Open an iPython terminal, create a GBDX interface and get the input location.
 ```python
 from gbdxtools import Interface
 from os.path import join
-import random, string
+import uuid
 
 gbdx = Interface()
 
@@ -1612,7 +1612,7 @@ Create a single-task workflow object and specify where the output data should be
 
 ```python
 # set output location to platform-stories/trial-runs/random_str within your bucket/prefix
-random_str = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(20))
+random_str = str(uuid.uuid4())
 output_location = join('platform-stories/trial-runs', random_str)
 
 workflow = gbdx.Workflow([cnn_task])

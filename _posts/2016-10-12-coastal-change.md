@@ -57,8 +57,7 @@ What preprocessing involves in this case is ortho-rectification, projection to U
 ```python
 import gbdxtools
 from os.path import join
-import random
-import string
+import uuid
 
 # create a gbdx interface
 gbdx = gbdxtools.Interface()
@@ -88,7 +87,7 @@ aop.inputs.ortho_epsg = 'UTM'     # this setting is optional
 preprocess_wf = gbdx.Workflow([order, aop])
 
 # set output location to platform-stories/trial-runs/random_str within your bucket/prefix
-random_str = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(20))
+random_str = str(uuid.uuid4())
 output_location = join('platform-stories/trial-runs', random_str)
 
 # the two processed images will be stored under output_location
@@ -303,14 +302,13 @@ Having created all the task objects and specified the relations between them acc
 and save the output as follows:
 
 ```python
-import random
-import string
+import uuid
 
 # create workflow from constituent tasks
 wf = gbdx.Workflow([ipa, water_pre, water_post, exclusion_mask, bcd_tri, bcd_loss, bcd_gain, ddt_gain, ddt_loss])
 
 # set output location to platform-stories/trial-runs/random_str within your bucket/prefix
-random_str = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(20))
+random_str = str(uuid.uuid4())
 output_location = join('platform-stories/trial-runs', random_str)
 
 # set which task outputs are to be stored and where
