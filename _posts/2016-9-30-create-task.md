@@ -1131,9 +1131,12 @@ Instruct docker to run without sudo privileges.
 sudo service docker start
 sudo groupadd docker
 sudo usermod -aG docker $USER
+
+# Reboot the instance
+sudo reboot
 ```
 
-Ensure Docker was installed properly by running the 'hello-world' container. You should see a message indicating that the installation was successful.
+Log back in to the instance and ensure Docker was installed properly by running the 'hello-world' container. You should see a message indicating that the installation was successful.
 
 ```bash
 docker run hello-world
