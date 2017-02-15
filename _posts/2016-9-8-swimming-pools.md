@@ -122,7 +122,7 @@ Create a train_task object and set the required inputs:
 ```python
 train_task = gbdx.Task('train-cnn-classifier')
 train_task.inputs.images = join(input_location, 'images')
-train_task.inputs.geojson = join(input_location, 'train_geojson')
+train_task.inputs.geojson = join(input_location, 'train-geojson')
 train_task.inputs.classes = 'No swimming pool, Swimming pool'     # Classes exactly as they appear in train.geojson
 ```
 
@@ -143,7 +143,7 @@ Create a deploy_task object with the required inputs, and set the *model* input 
 deploy_task = gbdx.Task('deploy-cnn-classifier')
 deploy_task.inputs.model = train_task.outputs.trained_model.value     # Trained model from train_task
 deploy_task.inputs.images = join(input_location, 'images')
-deploy_task.inputs.geojson = join(input_location, 'target_geojson')
+deploy_task.inputs.geojson = join(input_location, 'target-geojson')
 ```
 
 Specify the classes for the deploy task. We can also restrict the size of polygons that we deploy on and set the appropriate bit depth for the input imagery:
@@ -165,8 +165,8 @@ random_str = str(uuid.uuid4())
 output_location = join('platform-stories/trial-runs', random_str)
 
 # save workflow outputs
-workflow.savedata(train_task.outputs.trained_model, join(output_location, 'trained_model'))
-workflow.savedata(deploy_task.outputs.classified_geojson, join(output_location, 'classified_geojson'))
+workflow.savedata(train_task.outputs.trained_model, join(output_location, 'trained-model'))
+workflow.savedata(deploy_task.outputs.classified_geojson, join(output_location, 'classified-geojson'))
 ```
 
 Execute the workflow:
@@ -189,14 +189,14 @@ You can download your outputs as follows.
 ! mkdir trained_model
 
 # train-cnn-classifier sample output: final model
-gbdx.s3.download(join(output_location, 'trained_model/model_architecture.json'), 'trained_model/')
-gbdx.s3.download(join(output_location, 'trained_model/model_weights.h5'), 'trained_model/')
-gbdx.s3.download(join(output_location, 'trained_model/test_report.txt'), 'trained_model/')
+gbdx.s3.download(join(output_location, 'trained-model/model_architecture.json'), 'trained-model/')
+gbdx.s3.download(join(output_location, 'trained-model/model_weights.h5'), 'trained-model/')
+gbdx.s3.download(join(output_location, 'trained-model/test_report.txt'), 'trained-model/')
 
 ! mkdir classified_geojson
 
 # deploy-cnn-classifier sample output
-gbdx.s3.download(join(output_location, 'classified_geojson'), 'classified_geojson')
+gbdx.s3.download(join(output_location, 'classified-geojson'), 'classified-geojson')
 ```
 
 ## Visualizing the Results
