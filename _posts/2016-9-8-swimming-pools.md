@@ -183,17 +183,12 @@ workflow.events # a more in-depth summary of the workflow status
 ```
 
 You can download your outputs as follows.
-(The exclamation marks allow you to execute bash commands within ipython.)
 
 ```python
-! mkdir trained_model
-
 # train-cnn-classifier sample output: final model
 gbdx.s3.download(join(output_location, 'trained-model/model_architecture.json'), 'trained-model/')
 gbdx.s3.download(join(output_location, 'trained-model/model_weights.h5'), 'trained-model/')
 gbdx.s3.download(join(output_location, 'trained-model/test_report.txt'), 'trained-model/')
-
-! mkdir classified_geojson
 
 # deploy-cnn-classifier sample output
 gbdx.s3.download(join(output_location, 'classified-geojson'), 'classified-geojson')
