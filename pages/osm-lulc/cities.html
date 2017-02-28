@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js" integrity="sha256-8E6QUcFg1KTnpEU8TFGhpTGHw5fJqB9vCms3OhAYLqw=" crossorigin="anonymous"></script> -->
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css' rel='stylesheet' />
+
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<style type='text/css'>
+    #info {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        margin: 0px auto;
+        width: 35%;
+        padding: 10px;
+        border: none;
+        border-radius: 3px;
+        font-size: 12px;
+        text-align: center;
+        color: #222;
+        background: #fff;
+    }
+
+    #menu {
+        background: #fff;
+        position: absolute;
+        z-index: 1;
+        top: 10px;
+        right: 10px;
+        border-radius: 3px;
+        width: 120px;
+        border: 1px solid rgba(0,0,0,0.4);
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    #menu a {
+        font-size: 13px;
+        color: #404040;
+        display: block;
+        margin: 0;
+        padding: 0;
+        padding: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0,0,0,0.25);
+        text-align: center;
+    }
+
+    #menu a:last-child {
+        border: none;
+    }
+
+    #menu a:hover {
+        background-color: #f8f8f8;
+        color: #404040;
+    }
+
+    #menu a.active {
+        background-color: #3887be;
+        color: #ffffff;
+    }
+
+    #menu a.active:hover {
+        background: #3074a4;
+    }
+
+</style>
+
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.css' type='text/css' />
+
+<nav id="menu"></nav>
+<div id='map'></div>
+<pre id='info'></pre>
+
+<script>
+
+mapboxgl.accessToken = 'pk.eyJ1IjoibmFsZGVib3JnaCIsImEiOiJjaXc2ejFpYjYwMGM3Mm9ta3l6OHN0bTU5In0.-OCFh3DWXZaAq0AHlgj_Og';
+
+var cities = [
+{
+    id:"nyc",
+    coords:[[-73.95632922649384,40.74625719581601],[-73.89315783977509,40.74625719581601],[-73.89315783977509,40.67078428278468],[-73.95632922649384,40.67078428278468]]
+},
+{
+    id:"houston",
+    coords:[[-95.13090491294861,29.901953768885594],[-94.99769568443298,29.901953768885594],[-94.99769568443298,29.719047995031016],[-95.13090491294861,29.719047995031016]]
+},
+{
+    id:"la",
+    coords:[[-118.32255542278288,34.28251185970165],[-118.17252337932585,34.28251185970165],[-118.17252337932585,34.15873756789489],[-118.32255542278288,34.15873756789489]]
+},
+{
+    id:"montreal",
+    coords:[[-73.68750751018524,45.755584499516516],[-73.52236926555634,45.755584499516516],[-73.52236926555634,45.62199932750296],[-73.68750751018524,45.62199932750296]]
+},
+{
+    id:"athens",
+    coords:[[23.63831341266632,38.11515296145808],[23.791778683662415,38.11515296145808],[23.791778683662415,38.01784624197521],[23.63831341266632,38.01784624197521]]
+},
+{
+    id:"madrid",
+    coords:[[-3.7636488676071167,40.5083584870881],[-3.6263197660446167,40.5083584870881],[-3.6263197660446167,40.451429341017324],[-3.7636488676071167,40.451429341017324]]
+},
+{
+    id:"nairobi",
+    coords:[[36.73872381448745,-1.242017618358388],[36.88343435525894,-1.242017618358388],[36.88343435525894,-1.3279983315316601],[36.73872381448745,-1.3279983315316601]]
+},
+{
+    id:"amman",
+    coords:[[35.79846203327179,32.043632232381455],[35.97424328327179,32.043632232381455],[35.97424328327179,31.888389626458963],[35.79846203327179,31.888389626458963]]
+},
+{
+    id:"santiago",
+    coords:[[-70.74042499065399,-33.3886947889702],[-70.58936297893524,-33.3886947889702],[-70.58936297893524,-33.45030473839097],[-70.74042499065399,-33.45030473839097]]
+},
+{
+    id:"bangkok",
+    coords:[[100.44030010700226,13.671059968841831],[100.5965119600296,13.671059968841831],[100.5965119600296,13.575965977708762],[100.44030010700226,13.575965977708762]]
+},
+{
+    id:"cairo",
+    coords:[[31.244285702705383,30.11874679593054],[31.349342465400696,30.11874679593054],[31.349342465400696,30.045368026249772],[31.244285702705383,30.045368026249772]]
+},
+{
+    id:"osaka",
+    coords:[[135.4063493013382,34.712028818736535],[135.48188030719757,34.712028818736535],[135.48188030719757,34.598781325037756],[135.4063493013382,34.598781325037756]]
+},
+{
+    id:"buenosaires",
+    coords:[[-58.50621789693832,-34.596736825050044],[-58.39000314474106,-34.596736825050044],[-58.39000314474106,-34.67611297581835],[-58.50621789693832,-34.67611297581835]]
+},
+{
+    id:"shanghai",
+    coords:[[121.50280773639678,31.23486673223854],[121.60855114459991,31.23486673223854],[121.60855114459991,31.13559214758519],[121.50280773639678,31.13559214758519]]
+},
+{
+    id:"tehran",
+    coords:[[51.29124462604522,35.8234243437396],[51.481788754463196,35.8234243437396],[51.481788754463196,35.712275224230865],[51.29124462604522,35.712275224230865]]
+},
+{
+    id:"perth",
+    coords:[[115.77790081501009,-31.80399586706599],[115.92449963092803,-31.80399586706599],[115.92449963092803,-31.958215741514543],[115.77790081501009,-31.958215741514543]]
+},
+{
+    id:"ulaanbaatar",
+    coords:[[106.72447979450226,47.93939724053319],[106.93768322467804,47.93939724053319],[106.93768322467804,47.8784119735556],[106.72447979450226,47.8784119735556]]
+},
+{
+    id:"asuncion",
+    coords:[[-57.67184436321258,-25.26729487165973],[-57.524215579032905,-25.26729487165973],[-57.524215579032905,-25.389250469786013],[-57.67184436321258,-25.389250469786013]]
+}
+];
+
+var city1 = cities[0];
+var centerLat = (city1.coords[0][1] + city1.coords[2][1]) / 2.0;
+var centerLon = (city1.coords[0][0] + city1.coords[1][0]) / 2.0;
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/mapbox/streets-v9', //stylesheet location
+    center: [centerLon, centerLat], // starting position
+    zoom: 11 // starting zoom
+});
+
+
+function hideAllLayers() {
+    cities.map((city) => {
+        map.setLayoutProperty("osm-lulc-ras-" + city.id, 'visibility', 'none');
+        map.setLayoutProperty("osm-lulc-vec-" + city.id, 'visibility', 'none');
+    })
+}
+
+map.on('load', function() {
+
+    cities.map((city) => {
+        map.addSource('osm-lulc-ras-' + city.id, {
+            'type': 'raster',
+            'url':'mapbox://platformstories.osm-lulc-ras-' + city.id
+        });
+
+        map.addLayer({
+            'id': 'osm-lulc-ras-' + city.id,
+            'type': 'raster',
+            'source': 'osm-lulc-ras-' + city.id,
+            'layout': {
+                'visibility': "none"
+            }
+        });
+
+        map.setPaintProperty('osm-lulc-ras-' + city.id, 'raster-opacity', 0.8);
+
+        map.addSource('osm-lulc-vec-' + city.id, {
+            'type': 'vector',
+            'url': 'mapbox://platformstories.osm-lulc-vec-' + city.id
+        });
+
+        map.addLayer({
+            "id": "osm-lulc-vec-" + city.id,
+            "type": "line",
+            "source": "osm-lulc-vec-" + city.id,
+            "source-layer": "osm-lulc-vec-" + city.id,
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "line-color": "#00ff00",
+                "line-width": 1
+            }
+        });
+    })
+
+    map.setLayoutProperty("osm-lulc-ras-nyc", 'visibility', 'visible');
+    map.setLayoutProperty("osm-lulc-vec-nyc", 'visibility', 'visible');
+
+});
+
+// map.on('mousemove', function (e) {
+//     document.getElementById('info').innerHTML =
+//             // e.lngLat is the longitude, latitude geographical position of the event
+//         JSON.stringify(e.lngLat);
+// });
+
+map.addControl(new mapboxgl.NavigationControl(),'top-left');
+
+cities.map((city) => {
+
+    var link = document.createElement('a');
+    link.href = '#';
+    link.textContent = city.id;
+
+    link.onclick = function (e) {
+        hideAllLayers();
+
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        // var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+        //
+        //this.className = 'active';
+        map.setLayoutProperty("osm-lulc-ras-" + clickedLayer, 'visibility', 'visible');
+        map.setLayoutProperty("osm-lulc-vec-" + clickedLayer, 'visibility', 'visible');
+        var city = _.find(cities, { 'id': clickedLayer });
+        var centerLat = (city.coords[0][1] + city.coords[2][1]) / 2.0;
+        var centerLon = (city.coords[0][0] + city.coords[1][0]) / 2.0;
+        map.flyTo({
+            zoom: 11,
+            center: [centerLon, centerLat],
+        });
+    };
+
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+});
+
+</script>
+
+</body>
+</html>
