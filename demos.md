@@ -5,6 +5,8 @@ permalink: /demos/
 
 **Quick previews of our projects**
 
+[OSM coverage in cities around the world]({{ site.baseurl }}/pages/osm-lulc/cities.html). White is automatically extracted built-up and green is OSM building footprints. 
+
 [Oil tanks in Houston, Texas]({{ site.baseurl }}/pages/oil-tanks/houston.html).  
 
 [Population centers in Nigeria]({{ site.baseurl }}/pages/building-detection/diffa.html). Intensity of green indicates the level of confidence in the presence of buildings.
