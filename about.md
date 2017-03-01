@@ -13,11 +13,6 @@ GBDX Stories contains examples where GBDX is deployed to solve compelling
 geospatial problems. Our goal is to help you get started on GBDX, and
 to inspire and guide you to create your own algorithms and be part of our exciting Ecosystem.
 
-**To run the examples**
-
-Sign up for [GBDX](https://gbdx.geobigdata.io) and
-install [gbdxtools](https://github.com/digitalglobe/gbdxtools).
-
 **Get in touch**
 
 [GBDX Stories](mailto:kostas.stamatiou@digitalglobe.com)
