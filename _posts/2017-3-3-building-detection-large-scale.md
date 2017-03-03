@@ -72,11 +72,11 @@ Dynamic Range Adjustment (DRA) converts pixel values of an orthorectified, atmos
 
 Our goal was to assess the effect of DRA on the model accuracy. Using the original orthorectified, atmospherically compensated and pansharpened 16-bit imagery, and the FLAME cutlines, we created two **pseudo-mosaics** by:
 
-+ clipping the lowest 0.5% and highest 0.05% pixel intensities for each image tile **individually** and setting them to 0 and 255, respectively, and stitching these tiles;
++ Clipping the lowest 0.5% and highest 0.05% pixel intensities for each image tile **individually** and setting them to 0 and 255, respectively, and stitching these tiles. Clipping the pixel intensities to create 8-bit imagery is a naive form of DRA and we refer to it as CLIP.
 
-+ not performing any DRA at all, i.e., directly stitching the 16-bit tiles.
++ Not performing any DRA at all, i.e., directly stitching the 16-bit tiles; we refer to this mosaic as ACOMP to emphasize that the imagery has not been DRA'd.
 
-Clipping the pixel intensities to create 8-bit imagery is a naive form of DRA; we refer to it as CLIP. The CLIP pseudo-mosaic is compared to the actual mosaic below. Not surprisingly, the colors are different across tiles.
+The CLIP pseudo-mosaic is compared to the actual mosaic below. Not surprisingly, the colors are different across tiles.
 
 ![mosaics.png]({{ site.baseurl }}/images/building-detection-large-scale/mosaics.png)  
 *CLIP vs BLM. CLIP is performed on a per-tile basis. The FLAME cutlines outlining the tile boundaries are shown in green. BLM is the result of adjusting the colors to match an underlying global base layer.*
@@ -91,7 +91,8 @@ We trained and deployed the CNN on the BLM, CLIP and ACOMP mosaics using 5000 an
 ![clip-blm-acomp.png]({{ site.baseurl }}/images/building-detection-large-scale/clip-blm-acomp.png)
 *The performance on the BLM and CLIP mosaics is close to identical. Using the ACOMP mosaic incurs a performance loss which decreases with training sample size.*
 
-There is no notable difference in performance for the BLM and CLIP mosaics. Our interpretation of this result is that using training data across the entire mosaic enables the model to understand the differences in color across the CLIP tiles. In contrast, using the ACOMP mosaic results in a rather surprising performance penalty, and wider confidence intervals than the other two cases. This result requires further investigation! Our guess at the moment is that the model requires more time and/or more data to learn, given that 16-bit imagery contains more information than its DRA'd counterpart.        
+Surprisingly, DRA results in a performance enhancement over ACOMP, which is smaller for the larger training set. Our tentative interpretation of this result is that the model requires more time and/or more data to learn, given that 16-bit imagery contains more information than its DRA'd counterpart.
+Moreover, there is no notable performance difference between the BLM and CLIP mosaics. This is an indication that using training data across the entire mosaic enables the model to understand the differences in color across the CLIP tiles.         
 
 
 ### Training data spatial distribution
@@ -140,13 +141,13 @@ JPEG compression does not seem to affect the performance. On the contrary, it le
 
 In summary, we found that:
 
-+ DRA increases accuracy. This is rather surprising since DRA is an operation which reduces the image information content. Along this line of thought, we suspect that more training time and/or more training data are required to harness the full potential of 16-bit imagery.
++ DRA of the 16-bit ACOMP'd imagery increases accuracy. This is rather surprising since DRA is an operation which reduces the image information content. Along this line of thought, we suspect that more training time and/or more training data are required to harness the full potential of 16-bit imagery.
 
 + The spatial distribution of the training data has a crucial impact on accuracy. If training data collection has to be restricted to one area using a mosaic can help a model generalize to other areas.
 
 + JPEG compression has no impact on the performance. This is good news; compressed imagery takes up much less space than uncompressed imagery and the cost-savings could be very significant at a global scale.
 
-Keep in mind that these observations were derived for a particular use case in a specific part of the world, and are not meant to be used as guidelines. More investigation for diverse use cases and geographical locations is required to reach meaningful conclusions.
+These observations were derived for a particular use case in a specific part of the world, and are not meant to be used as guidelines. More investigation for diverse use cases and geographical locations is required to reach meaningful conclusions.
 
 Perhaps more important than the accuracy viewpoint is the fact that the framework presented here can be used to achieve tremendous search area reduction when looking for sparse settlements over large areas. For a model trained on 5000 samples, the precision at 90% recall is about 30%. That sounds quite bad, yet, in reality, what this means is that the model can single out 27300 locations out of 845000 candidates; a 96.8% search area reduction. It is much faster and economic to run a crowdsourcing campaign to remove the false positives from 27300 detections, than to collect labels for 850000 chips.  
 
@@ -156,5 +157,7 @@ You can explore the results, shown in green, below (full page view [here]({{ sit
 {% raw %}
 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="800" height="800" src="../pages/building-detection-large-scale/deploy-results.html"></iframe>
 {% endraw %}
+
+Future research will include more experiments with 16-bit imagery and all 8 bands of our WorldView-2 and WorldView-3 sensors to assess the impact of these unique capabilities on deep learning algorithms.
 
 For more information on machine learning research at DigitalGlobe and on GBDX in general, [get in touch](mailto:kostas.stamatiou@digitalglobe.com).
