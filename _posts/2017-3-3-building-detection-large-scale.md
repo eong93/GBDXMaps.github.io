@@ -154,7 +154,7 @@ We deployed our best model on the entire mosaic and kept the detections with con
 You can explore the results, shown in green, below (full page view [here]({{ site.baseurl }}/pages/building-detection-large-scale/deploy-results.html)). To make this map, we [uploaded the geojson with all the detections to Mapbox](https://github.com/platformstories/upload-to-mapbox) and used the [Mapbox GL Javascript library](https://www.mapbox.com/mapbox-gl-js/api/) to reference the vector tile set.
 
 {% raw %}
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="800" height="800" src="https://kostasthebarbarian.github.io/pages/building-detection-large-scale/deploy-results.html"></iframe>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="800" height="800" src="../pages/building-detection-large-scale/deploy-results.html"></iframe>
 {% endraw %}
 
 For more information on machine learning research at DigitalGlobe and on GBDX in general, [get in touch](mailto:kostas.stamatiou@digitalglobe.com).
