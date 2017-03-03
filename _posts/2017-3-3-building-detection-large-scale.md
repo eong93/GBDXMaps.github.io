@@ -14,9 +14,9 @@ In a [recent experiment](http://gbdxstories.digitalglobe.com/building-detection/
 
 ## Setup
 
-In an attempt to address some of these questions, we decided to conduct a larger experiment in the same part of the world. The region of interest is a square at the border of Nigeria and Cameroon, spanning an area just short of 20000 km2. We picked out 31 recent images captured by WorldView-2, WorldView-3 and GeoEye-1, and constructed a mosaic using our proprietary **Flexible Large Area Mosaic Engine (FLAME)** technology.
+In an attempt to address some of these questions, we decided to conduct a larger experiment in the same part of the world. The region of interest is a square at the border of Nigeria and Cameroon, spanning an area just short of 20000 km2. We picked out 31 recent images captured by WorldView-2, WorldView-3 and GeoEye-1 and ran them through our [image preprocessor](http://gbdxdocs.digitalglobe.com/docs/advanced-image-preprocessor) for orthorectification, atmospherical compensation and pansharpening. We then constructed a mosaic using our proprietary **Flexible Large Area Mosaic Engine (FLAME)** technology.
 
-FLAME solves a rather complicated problem: it turns a hodgepodge of images that have been individually orthorectified, atmospherically compensated and pansharpened with our [image preprocessor](http://gbdxdocs.digitalglobe.com/docs/advanced-image-preprocessor), into a seamless mosaic. It is designed and implemented to take advantage of parallel computation, such that it can process millions of km2 in a matter of hours. FLAME constructs the mosaic in two main steps:
+FLAME solves a rather complicated problem: it turns a hodgepodge of individual images into a seamless mosaic. It is designed and implemented to take advantage of parallel computation, such that it can process millions of km2 in a matter of hours. FLAME constructs the mosaic in two main steps:
 
 + it adjusts the pixel intensities in the R,G,B bands to color-match a global base layer, a procedure that is called **Base Layer Matching (BLM)**;
 + it intelligently weaves the images across optimized boundaries called cutlines in order to maximize blending.
@@ -68,15 +68,15 @@ Training with train-cnn-chip-classifier on 5000 chips took approximately 9 hours
 
 ### Dynamic Range Adjustment (DRA)
 
-Dynamic Range Adjustment (DRA) converts pixel values of an orthorectified, atmospherically compensated, pansharpened image from 16 bits to 8 bits, so that the image is viewable by the human eye on a computer screen. DRA is available as an option on the GBDX [image preprocessor](http://gbdxdocs.digitalglobe.com/docs/advanced-image-preprocessor). In order to construct a FLAME mosaic, DRA is performed with BLM, in order to achieve color consistency across the mosaic.  
+Dynamic Range Adjustment (DRA) converts pixel values of an orthorectified, atmospherically compensated, pansharpened image from 16 bits to 8 bits, so that the image is viewable by the human eye on a computer screen. In order to construct a FLAME mosaic, DRA is performed with BLM in order to achieve color consistency across the mosaic.  
 
-Our goal was to assess the effect of DRA on the model accuracy. Using the original orthorectified, atmospherically compensated and pansharpened 16-bit imagery, and the FLAME cutlines, we created two **pseudo-mosaics** by:
+Our goal was to assess the effect of DRA on the model accuracy. Using the original orthorectified, atmospherically compensated and pansharpened 16-bit imagery, and the FLAME cutlines, we created two pseudo-mosaics by:
 
-+ Clipping the lowest 0.5% and highest 0.05% pixel intensities for each image tile **individually** and setting them to 0 and 255, respectively, and stitching these tiles. Clipping the pixel intensities to create 8-bit imagery is a naive form of DRA and we refer to it as CLIP.
++ Clipping the lowest 0.5% and highest 0.05% pixel intensities for each image tile **individually**, setting the limits to 0 and 255, respectively, and stitching these tiles; we refer to this mosaic as CLIP.
 
 + Not performing any DRA at all, i.e., directly stitching the 16-bit tiles; we refer to this mosaic as ACOMP to emphasize that the imagery has not been DRA'd.
 
-The CLIP pseudo-mosaic is compared to the actual mosaic below. Not surprisingly, the colors are different across tiles.
+Clipping the pixel intensities to create 8-bit imagery is a naive form of DRA. The CLIP mosaic is compared to the actual mosaic below. Not surprisingly, the colors are different across tiles.
 
 ![mosaics.png]({{ site.baseurl }}/images/building-detection-large-scale/mosaics.png)  
 *CLIP vs BLM. CLIP is performed on a per-tile basis. The FLAME cutlines outlining the tile boundaries are shown in green. BLM is the result of adjusting the colors to match an underlying global base layer.*
