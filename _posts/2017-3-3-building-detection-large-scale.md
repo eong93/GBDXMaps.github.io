@@ -134,7 +134,7 @@ We trained and deployed the CNN on the CLIP mosaic using both JPEG-compressed an
 {:refdef}
 *JPEG compression does not incur an accuracy penalty.*
 
-JPEG compression does not seem to affect the performance. On the contrary, it leads to tighter confidence intervals than uncompressed imagery. In other words, there is considerably larger variance in accuracy for the models we trained on the uncompressed imagery.
+JPEG compression does not appear to affect the performance. On the contrary, it leads to tighter confidence intervals than uncompressed imagery. In other words, there is considerably larger variance in accuracy for the models we trained on the uncompressed imagery.
 
 
 ## Discussion
