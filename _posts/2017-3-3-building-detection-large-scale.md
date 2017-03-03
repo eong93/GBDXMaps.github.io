@@ -74,7 +74,7 @@ Our goal was to assess the effect of DRA on the model accuracy. Using the origin
 
 + Clipping the lowest 0.5% and highest 0.05% pixel intensities for each image tile **individually**, setting the limits to 0 and 255, respectively, and stitching these tiles; we refer to this mosaic as CLIP.
 
-+ Not performing any DRA at all, i.e., directly stitching the 16-bit tiles; we refer to this mosaic as ACOMP to emphasize that the imagery has not been DRA'd.
++ Not performing any DRA at all, i.e., directly stitching the 16-bit tiles; we refer to this mosaic as ACOMP to emphasize that the imagery was not DRA'd.
 
 Clipping the pixel intensities to create 8-bit imagery is a naive form of DRA. The CLIP mosaic is compared to the actual mosaic below. Not surprisingly, the colors are different across tiles.
 
