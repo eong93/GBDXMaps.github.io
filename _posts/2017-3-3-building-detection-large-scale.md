@@ -81,7 +81,7 @@ Clipping the pixel intensities to create 8-bit imagery is a naive form of DRA. T
 ![mosaics.png]({{ site.baseurl }}/images/building-detection-large-scale/mosaics.png)  
 *CLIP vs BLM. CLIP is performed on a per-tile basis. The FLAME cutlines outlining the tile boundaries are shown in green. BLM is the result of adjusting the colors to match an underlying global base layer.*
 
-16-bit imagery can not be displayed on 8-bit monitors so we can't really view the ACOMP pseudo-mosaic unless DRA is applied. Below, we've plotted the pixel intensity histograms of a single chip for BLM, CLIP and ACOMP. The histograms follow the same pattern. Note that the horizontal axis has a much larger range for ACOMP than for CLIP and BLM as intensity takes values from 0 to 65535.
+16-bit imagery can not be displayed on 8-bit monitors so we can't really view the ACOMP pseudo-mosaic unless DRA is applied. Below, we've plotted the pixel intensity histograms of a single chip for BLM, CLIP and ACOMP. The histograms follow the same pattern, however, the range of the horizontal axis is much larger in the ACOMP case.
 
 ![histograms.png]({{ site.baseurl }}/images/building-detection-large-scale/histograms.png)
 *Pixel intensity histograms for a BLM, CLIP and ACOMP chip. The colors of the ACOMP chip are not 'true'; the chip has been DRA'd in QGIS so that it can be displayed on the monitor.*
