@@ -68,20 +68,21 @@ Training with train-cnn-chip-classifier on 5000 chips took approximately 9 hours
 
 ### Dynamic Range Adjustment (DRA)
 
-Dynamic Range Adjustment (DRA) converts pixel values of an orthorectified, atmospherically compensated, pansharpened image from 16 bits to 8 bits, so that the image is viewable by the human eye on a computer screen. In order to construct a FLAME mosaic, DRA is performed with BLM in order to achieve color consistency across the mosaic.  
+Dynamic Range Adjustment (DRA) converts pixel values of an orthorectified, atmospherically compensated, pansharpened image from 16 bits to 8 bits, so that the image is viewable on a computer screen. In order to construct a FLAME mosaic, DRA is performed with BLM in order to achieve color consistency across the mosaic.  
 
-Our goal was to assess the effect of DRA on the model accuracy. Using the original orthorectified, atmospherically compensated and pansharpened 16-bit imagery, and the FLAME cutlines, we created two pseudo-mosaics by:
+Our goal was to assess the effect of DRA on the model accuracy. Using the 16-bit imagery, we created two pseudo-mosaics by:
 
-+ Clipping the lowest 0.5% and highest 0.05% pixel intensities for each image tile **individually**, setting the limits to 0 and 255, respectively, and stitching these tiles; we refer to this mosaic as CLIP.
++ Clipping the lowest 0.5% and highest 0.05% pixel intensities for each image strip **individually**, setting the limits to 0 and 255, respectively, and stitching them using the FLAME cutlines; we refer to this mosaic as CLIP.
 
-+ Not performing any DRA at all, i.e., directly stitching the 16-bit tiles; we refer to this mosaic as ACOMP to emphasize that the imagery was not DRA'd.
++ Not performing any DRA at all, i.e., directly stitching the 16-bit images using the cutlines; we refer to this mosaic as ACOMP to emphasize the fact that the imagery was not DRA'd.
 
 Clipping the pixel intensities to create 8-bit imagery is a naive form of DRA. The CLIP mosaic is compared to the actual mosaic below. Not surprisingly, the colors are different across tiles.
 
 ![mosaics.png]({{ site.baseurl }}/images/building-detection-large-scale/mosaics.png)  
 *CLIP vs BLM. CLIP is performed on a per-tile basis. The FLAME cutlines outlining the tile boundaries are shown in green. BLM is the result of adjusting the colors to match an underlying global base layer.*
 
-16-bit imagery can not be displayed on 8-bit monitors so we can't really view the ACOMP pseudo-mosaic unless DRA is applied. Below, we've plotted the pixel intensity histograms of a single chip for BLM, CLIP and ACOMP. The histograms follow the same pattern, however, the range of the horizontal axis is much larger in the ACOMP case.
+16-bit imagery can not be displayed on 8-bit monitors so we can't really view the ACOMP pseudo-mosaic unless DRA is applied.
+Below, we've plotted the pixel intensity histograms of a single chip for BLM, CLIP and ACOMP. The histograms follow the same pattern, however, the range of the horizontal axis is much larger in the ACOMP case.
 
 ![histograms.png]({{ site.baseurl }}/images/building-detection-large-scale/histograms.png)
 *Pixel intensity histograms for a BLM, CLIP and ACOMP chip. The colors of the ACOMP chip are not 'true'; the chip has been DRA'd in QGIS so that it can be displayed on the monitor.*
@@ -91,8 +92,7 @@ We trained and deployed the CNN on the BLM, CLIP and ACOMP mosaics using 5000 an
 ![clip-blm-acomp.png]({{ site.baseurl }}/images/building-detection-large-scale/clip-blm-acomp.png)
 *The performance on the BLM and CLIP mosaics is close to identical. Using the ACOMP mosaic incurs a performance loss which decreases with training sample size.*
 
-Surprisingly, DRA results in a performance enhancement over ACOMP, which is smaller for the larger training set. Our tentative interpretation of this result is that the model requires more time and/or more data to learn, given that 16-bit imagery contains more information than its DRA'd counterpart.
-Moreover, there is no notable performance difference between the BLM and CLIP mosaics. This is an indication that using training data across the entire mosaic enables the model to understand the differences in color across the CLIP tiles.         
+Surprisingly, DRA, both CLIP and BLM, results in a performance enhancement which is smaller for the larger training set. Our tentative interpretation of this result is that the model requires more time and/or more data to learn on the ACOMP mosaic, given that 16-bit imagery contains more information than its DRA'd counterpart. Moreover, there is no notable performance difference between CLIP and BLM. This is an indication that using training data across the entire mosaic enables the model to understand the differences in color across the CLIP tiles.         
 
 
 ### Training data spatial distribution
