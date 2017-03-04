@@ -5,10 +5,14 @@ permalink: /demos/
 
 **Quick previews of our projects**
 
-[OSM coverage in different cities]({{ site.baseurl }}/pages/osm-lulc/cities.html)<br>
+[Population centers on Nigeria/Cameroon mosaic]({{ site.baseurl }}/pages/building-detection-large-scale/deploy-results.html)<br>
+Green indicates building presence with high confidence.
+
+[OSM coverage in cities around the world]({{ site.baseurl }}/pages/osm-lulc/cities.html)<br>
 White is automatically extracted built-up and green is OSM building footprints.
 
 [Oil tanks in Houston, Texas]({{ site.baseurl }}/pages/oil-tanks/houston.html)  
+Oil tank bounding boxes are outlined.
 
 [Population centers in Nigeria]({{ site.baseurl }}/pages/building-detection/diffa.html)<br>
 Intensity of green indicates confidence in building presence.
