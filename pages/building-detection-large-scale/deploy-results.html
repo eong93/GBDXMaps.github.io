@@ -64,13 +64,13 @@ map.on('load', function() {
 
     map.addSource('buildings', {
         type: 'vector',
-        url: 'mapbox://platformstories.building-detection-grid-clip'
+        url: 'mapbox://platformstories.building-detection-ls-deploy'
     });
     map.addLayer({
         "id": "buildings",
         "type": "line",
         "source": "buildings",
-        "source-layer": "buildingsgeojson",
+        "source-layer": "building-detection-ls-grid-deploy",
         "layout": {
             "visibility": "visible"
         },
@@ -82,13 +82,6 @@ map.on('load', function() {
     });
     
 });
-
-
-// map.on('mousemove', function (e) {
-//    document.getElementById('info').innerHTML =
-            // e.lngLat is the longitude, latitude geographical position of the event
-//        JSON.stringify(e.lngLat);
-// });
 
 map.addControl(new mapboxgl.NavigationControl());
 
