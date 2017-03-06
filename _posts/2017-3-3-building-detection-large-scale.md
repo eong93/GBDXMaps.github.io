@@ -117,7 +117,9 @@ better on the BLM mosaic since the colors are more consistent compared to the CL
 
 We also compared the model trained on the restricted training set to the model trained on the mosaic-wide training set on the CLIP mosaic.
 
+{:refdef: style="text-align: center;"}
 ![spatial-res-plots.png]({{ site.baseurl }}/images/building-detection-large-scale/crowdsourcing.png)  
+{:refdef}
 *Lack of mosaic-wide training data leads to decreased accuracy.*
 
 The PR curves demonstrate that the performance penalty of collecting training data only from one location is significant, e.g., at a recall of 90%, the precision drops from 35% to about 15%. The implication is that the cost required to validate the building detections with a crowdsourcing campaign more than doubles.
