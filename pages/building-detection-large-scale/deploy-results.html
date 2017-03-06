@@ -61,9 +61,7 @@ map.on('load', function() {
         'minzoom': 0,
         'maxzoom': 22
     });
-});
 
-map.on('load', function () {
     map.addSource('buildings', {
         type: 'vector',
         url: 'mapbox://platformstories.building-detection-grid-clip'
@@ -82,6 +80,7 @@ map.on('load', function () {
         },
         "filter": [">", "certainty", 0.975]
     });
+    
 });
 
 
