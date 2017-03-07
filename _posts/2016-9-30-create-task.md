@@ -619,7 +619,7 @@ gbdx.s3.download(output_location)
 To delete hello-gbdx from the registry:
 
 ```python
-gbdx.task_registry.delete('hello-gbdx')
+gbdx.task_registry.delete('hello-gbdx:0.0.1')
 >>> u'hello-gbdx successfully deleted.'
 ```
 
