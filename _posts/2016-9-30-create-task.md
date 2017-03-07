@@ -790,12 +790,12 @@ if __name__ == "__main__":
 
 ### The Docker Image
 
-rf-pool-classifier requires more libraries than hello-gbdx, such as [numpy](http://www.numpy.org/) and [mltools](https://github.com/DigitalGlobe/mltools). We build the Docker image rf-pool-classifier-docker-image by pulling [naldeborgh/gdal_base](https://hub.docker.com/r/naldeborgh/gdal_base/) and installing the required libraries.
+rf-pool-classifier requires more libraries than hello-gbdx, such as [numpy](http://www.numpy.org/) and [mltools](https://github.com/DigitalGlobe/mltools). We build the Docker image rf-pool-classifier-docker-image by pulling [geographica/gdal2:2.1.2](https://hub.docker.com/r/geographica/gdal2/) and installing the required libraries.
 
 ```bash
 # Pull and tag the Docker image
-docker pull naldeborgh/gdal_base
-docker tag naldeborgh/gdal_base <your_username>/gdal_base
+docker pull geographica/gdal2:2.1.2
+docker tag geographica/gdal2:2.1.2 <your_username>/gdal_base
 
 # Run the container
 docker run -it <your_username>/gdal_base
@@ -857,7 +857,7 @@ To build the image:
 docker build -t <your_username>/rf-pool-classifier-docker-image .
 ```
 
-The DockerFile and scripts can be found [here](https://github.com/PlatformStories/create-task/tree/master/rf-pool-classifier/rf-pool-classifier-build).
+The DockerFile and scripts can be found [here](https://github.com/PlatformStories/rf-pool-classifier).
 
 ### Testing the Docker Image
 
@@ -921,6 +921,7 @@ The definition for rf-pool-classifier is provided below:
 ```json
 {
     "name": "rf-pool-classifier",
+    "version": "0.0.1",
     "description": "Train a random forest classifier to classify polygons in those that contain pools and those that do not.",
     "properties": {
         "isPublic": true,
@@ -990,7 +991,7 @@ import uuid
 gbdx = Interface()
 
 # specify location
-input_location = 's3://gbd-customer-data/58600248-2927-4523-b44b-5fec3d278c09/platform-stories/create-task/rf-pool-classifier'
+input_location = 's3://gbd-customer-data/58600248-2927-4523-b44b-5fec3d278c09/platform-stories/rf-pool-classifier'
 ```
 
 Create an rf_task object and specify the inputs.
