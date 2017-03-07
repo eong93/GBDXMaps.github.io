@@ -41,7 +41,7 @@ When a workflow is executed, tasks are scheduled appropriately by a scheduler an
 # Hello GBDX
 
 In this section, we will write a Python script for our Hello GBDX task, hello-gbdx.
-The script [hello-gbdx.py](https://github.com/PlatformStories/create-task/tree/master/hello-gbdx/code/hello-gbdx.py) does the following: it obtains a list of the task input files and prints this list
+The script [hello-gbdx.py](https://github.com/PlatformStories/hello-gbdx/blob/master/bin/hello-gbdx.py) does the following: it obtains a list of the task input files and prints this list
 in the file out.txt, along with a user defined message.
 This script is executed by the Python interpreter within the task's Docker container (more on this [a bit later](#about-docker)).
 
@@ -183,7 +183,7 @@ Below is a list of images that may be useful to you:
 
 - **[ubuntu](https://hub.docker.com/r/library/ubuntu/)**: A basic image with an Ubuntu OS and a good starting point for very simple tasks. This can be configured further once you have your own version tagged, which we will review below.
 
-- **[naldeborgh/gdal_base](https://hub.docker.com/r/naldeborgh/gdal_base/)**: An image with Ubuntu 14.04 and GDAL v.1.10.1. (See the repo for a complete list of packages installed.)
+- **[geographica/gdal2](https://hub.docker.com/r/geographica/gdal2/)**: An image with Ubuntu 14.04 and GDAL v.2. (See the 'tags' tab in the repo for specific version options.)
 
 - **[naldeborgh/python_vim](https://hub.docker.com/r/naldeborgh/python_vim/)**: An image with Ubuntu 14.04, Python libraries and vim.
 
@@ -239,7 +239,7 @@ Congratulations! You now have your own docker image to which you can add your co
 ![docker_commit_wf.png]({{ site.baseurl }}/images/create-task/docker_commit_wf.png)
 *Figure 2: Adding code to a docker image.*
 
-The following steps (shown in Figure 2) walk you through adding [hello-gbdx.py](https://github.com/PlatformStories/create-task/tree/master/hello-gbdx/code/hello-gbdx.py) and [gbdx_task_interface.py](https://github.com/PlatformStories/create-task/tree/master/hello-gbdx/code/gbdx_task_interface.py) to hello-gbdx-docker-image. Before getting started ensure that both scripts are saved to your current working directory.
+The following steps (shown in Figure 2) walk you through adding [hello-gbdx.py](https://github.com/PlatformStories/hello-gbdx/blob/master/bin/hello-gbdx.py) and [gbdx_task_interface.py](https://github.com/PlatformStories/hello-gbdx/blob/master/bin/gbdx_task_interface.py) to hello-gbdx-docker-image. Before getting started ensure that both scripts are saved to your current working directory.
 
 First we run the image using the ```docker run``` command in detached mode (using the -d flag). This tells the container to run in the background so we can access the files on our local machine.
 
@@ -315,7 +315,7 @@ For more information on DockerFiles see [here](https://docs.docker.com/engine/re
 
 In this example, we will build hello-gbdx-docker-image.
 
-We begin by making the directory [hello-gbdx-build](https://github.com/PlatformStories/create-task/tree/master/hello-gbdx/hello-gbdx-build), which will contain our DockerFile, and the subdirectory bin in which we copy hello-gbdx.py and gbdx_task_interface.py.
+We begin by making the directory [hello-gbdx](https://github.com/PlatformStories/hello-gbdx), which will contain our DockerFile, and the subdirectory [bin](https://github.com/PlatformStories/hello-gbdx/tree/master/bin) in which we copy hello-gbdx.py and gbdx_task_interface.py.
 
 ```bash
 # Make build an bin directories
@@ -348,14 +348,14 @@ RUN apt-get update && apt-get -y install\
     python-dev
 ```
 
-We instruct Docker to place the contents of [bin](https://github.com/PlatformStories/create-task/tree/master/hello-gbdx/hello-gbdx-build/bin) into the image root directory. Add the following line to the end of Dockerfile:
+We instruct Docker to place the contents of [bin](https://github.com/PlatformStories/hello-gbdx/tree/master/bin) into the image root directory. Add the following line to the end of Dockerfile:
 
 ```bash
 # Add all scripts in bin to the image root directory
 ADD ./bin /
 ```
 
-Our DockerFile is now [complete](https://github.com/PlatformStories/create-task/tree/master/hello-gbdx/hello-gbdx-build/Dockerfile). Exit vim with the ```:wq``` command.
+Our DockerFile is now [complete](https://github.com/PlatformStories/hello-gbdx/blob/master/Dockerfile). Exit vim with the ```:wq``` command.
 
 We are now ready to build the image. Make sure that you are still in the hello-gbdx-build directory and execute the following command:
 
@@ -376,7 +376,7 @@ Our Docker image is now ready to be tested with sample inputs.
 ## Testing a Docker Image
 
 At this point you should have hello-gbdx-docker-image which includes hello-gbdx.py.
-In this section, we will run this image with actual input data. Successfully doing this locally ensures that hello-gbdx will run on GBDX. [hello-gbdx/sample-input in this repo](https://github.com/PlatformStories/create-task/tree/master/hello-gbdx/sample-input) contains the two inputs required by hello-gbdx: (a) the directory [data_in](https://github.com/PlatformStories/create-task/tree/master/hello-gbdx/sample-input/data_in), the contents of which will be written to out.txt (in this example, this is simply the file data_file.txt) (b) the file [ports.json](https://github.com/PlatformStories/create-task/tree/master/hello-gbdx/sample-input/ports.json) which
+In this section, we will run this image with actual input data. Successfully doing this locally ensures that hello-gbdx will run on GBDX. [hello-gbdx/sample-input in this repo](https://github.com/PlatformStories/hello-gbdx/tree/master/sample-input) contains the two inputs required by hello-gbdx: (a) the directory [data_in](https://github.com/PlatformStories/hello-gbdx/tree/master/sample-input/data_in), the contents of which will be written to out.txt (in this example, this is simply the file data_file.txt) (b) the file [ports.json](https://github.com/PlatformStories/hello-gbdx/blob/master/sample-input/ports.json) which
 contains the message to be written to out.txt. Keep in mind that ports.json is automatically created by GBDX based on the task definition and the values of the string input ports provided by the user when the task is executed.
 
 Run hello-gbdx-docker-image and mount inputs to the container under mnt/work/input; this is where GBDX will place the inputs when the task is executed.
@@ -431,11 +431,12 @@ Now that we have hello-gbdx-docker-image working locally, we can finally define 
 
 ## Defining the Task
 
-The task definition is a [json file](https://github.com/PlatformStories/create-task/tree/master/hello-gbdx/hello-gbdx-definition.json) that contains a description of the task functionality, a list of its inputs and outputs, and the Docker image that needs to be run when the task is executed.
+The task definition is a [json file](https://github.com/PlatformStories/hello-gbdx/blob/master/hello-gbdx-definition.json) that contains a description of the task functionality, a list of its inputs and outputs, and the Docker image that needs to be run when the task is executed.
 
 ```json
 {
     "name": "hello-gbdx",
+    "version":"0.0.1",
     "description": "Writes list of the input file names and a user defined message to output file out.txt.",
     "properties": {
         "isPublic": true,
@@ -476,13 +477,14 @@ The task definition is a [json file](https://github.com/PlatformStories/create-t
 
 ```
 
-We review the four parts of this definition below.
+We review the five parts of this definition below.
 
 <b>Task properties</b>:    
 
 ```
 {
     "name": "hello-gbdx",
+    "version":"0.0.1",
     "description": "Writes list of the input file names and a user defined message to output file out.txt.",
     "properties": {
         "isPublic": true,
@@ -490,6 +492,7 @@ We review the four parts of this definition below.
 ```
 
 - <b>name</b>: The task name.
+- <b>version</b>: The task [version number](https://gbdxdocs.digitalglobe.com/docs/how-to-version-a-task). Note that this must be incremented every time the task is updated and re-registered.
 - <b>description</b>: A brief, high-level description of the task.
 - <b>isPublic</b>: A boolean. If true, the task is publicly available.
 - <b>timeout</b>: Amount of time (in seconds) for the task to run before it is terminated by the platform. The max value is 36000 (i.e., 10 hours).  
@@ -552,7 +555,7 @@ We review the four parts of this definition below.
 
 ## GBDX Task Registry
 
-We now have all the required material to register hello-gbdx: [a Docker image on DockerHub](#creating-a-docker-image) and the [task definition](https://github.com/PlatformStories/create-task/tree/master/hello-gbdx/hello-gbdx-definition.json).
+We now have all the required material to register hello-gbdx: [a Docker image on DockerHub](#creating-a-docker-image) and the [task definition](https://github.com/PlatformStories/hello-gbdx/blob/master/hello-gbdx-definition.json).
 
 Open an iPython terminal, import gbdxtools and start up a GBDX Interface.  
 
