@@ -569,10 +569,10 @@ Call the ```register()``` method of the **TaskRegistry** class with the name of 
 
 ```python
 gbdx.task_registry.register(json_filename = 'hello-gbdx-definition.json')
->>> u'hello-gbdx successfully registered.'
+>>> u'hello-gbdx:0.0.1 has been submitted for registration.'
 ```
 
-There's a good chance that hello-gbdx already exists in the registry. You can try using a different name after appropriaterly modifying the definition.
+The task will now migrate to from DockerHub to AWS. This process takes up to 30 minutes, and the task will not be available until migration is complete. There's a good chance that hello-gbdx:0.0.1 already exists in the registry. You can try using a different name after appropriaterly modifying the definition.
 
 Congratulations, you have just registered hello-gbdx! You can run it with sample data as follows. Open an ipython terminal and copy in the following:
 
@@ -583,7 +583,7 @@ import uuid
 gbdx = Interface()
 
 # specify S3 location of input files
-input_location = 's3://gbd-customer-data/58600248-2927-4523-b44b-5fec3d278c09/platform-stories/create-task/hello-gbdx'
+input_location = 's3://gbd-customer-data/58600248-2927-4523-b44b-5fec3d278c09/platform-stories/hello-gbdx/'
 
 # create task object
 hello_task = gbdx.Task('hello-gbdx')
