@@ -183,7 +183,7 @@ Below is a list of images that may be useful to you:
 
 - **[ubuntu](https://hub.docker.com/r/library/ubuntu/)**: A basic image with an Ubuntu OS and a good starting point for very simple tasks. This can be configured further once you have your own version tagged, which we will review below.
 
-- **[geographica/gdal2](https://hub.docker.com/r/geographica/gdal2/)**: An image with Ubuntu 14.04 and GDAL v.2. (See the 'tags' tab in the repo for specific version options.)
+- **[geographica/gdal2](https://hub.docker.com/r/geographica/gdal2/)**: An image with Ubuntu 16.04 and GDAL v.2.x. (See the 'tags' tab in the repo for specific version options.)
 
 - **[naldeborgh/python_vim](https://hub.docker.com/r/naldeborgh/python_vim/)**: An image with Ubuntu 14.04, Python libraries and vim.
 
@@ -221,11 +221,11 @@ docker tag naldeborgh/python_vim <your_username>/hello-gbdx-docker-image
 docker push <your_username>/hello-gbdx-docker-image
 ```
 
-This step is optional. We are going to run the image interactively (using the '-it' flag) to produce a container. Recall that a container is a running instance of the image, but the image itself remains static. This means that any changes you make to the container will not affect the image and will be lost once the container is stopped. Familiarize yourself with the structure of the container using ```cd``` and ```ls```:
+This step is optional. We are going to run the image interactively (using the ```-it``` flag) to produce a container. The ```--rm``` flag keeps your machine clean by deleting the container after it is stopped. Recall that a container is a running instance of the image, but the image itself remains static. This means that any changes you make to the container will not affect the image and will be lost once the container is stopped. Familiarize yourself with the structure of the container using ```cd``` and ```ls```:
 
 ```bash
 # Run the image
-docker run -it <your_username>/hello-gbdx-docker-image
+docker run --rm -it <your_username>/hello-gbdx-docker-image
 
 # Now we are in the container. Explore some as you would in the command line
 root@ff567ca72fa0:/ ls
@@ -241,10 +241,10 @@ Congratulations! You now have your own docker image to which you can add your co
 
 The following steps (shown in Figure 2) walk you through adding [hello-gbdx.py](https://github.com/PlatformStories/hello-gbdx/blob/master/bin/hello-gbdx.py) and [gbdx_task_interface.py](https://github.com/PlatformStories/hello-gbdx/blob/master/bin/gbdx_task_interface.py) to hello-gbdx-docker-image. Before getting started ensure that both scripts are saved to your current working directory.
 
-First we run the image using the ```docker run``` command in detached mode (using the -d flag). This tells the container to run in the background so we can access the files on our local machine.
+First we run the image using the ```docker run``` command in detached mode (using the ```-d``` flag). This tells the container to run in the background so we can access the files on our local machine.
 
 ```bash
-docker run -itd <your_username>/hello-gbdx-docker-image
+docker run --rm -itd <your_username>/hello-gbdx-docker-image
 >>> ff567ca72fa0ed6cdfbe0a5c02ea3e04f88ec49239344f217ce1049651d01344
 ```
 
@@ -289,7 +289,7 @@ docker push <your_username>/hello-gbdx-docker-image
 Keep in mind that, although hello-gbdx does not require any additional libraries to run, often times you will need to install a package that is not provided in the image that you pulled. Let's say our task requires numpy to run; the process of adding it to the image is similar:
 
 ```bash
-# Start up a container in attached mode
+# Start up a container in attached mode, do not use the --rm flag
 docker run -it <your_username>/hello-gbdx-docker-image
 
 # Import numpy (can take several minutes)
@@ -376,13 +376,13 @@ Our Docker image is now ready to be tested with sample inputs.
 ## Testing a Docker Image
 
 At this point you should have hello-gbdx-docker-image which includes hello-gbdx.py.
-In this section, we will run this image with actual input data. Successfully doing this locally ensures that hello-gbdx will run on GBDX. [hello-gbdx/sample-input in this repo](https://github.com/PlatformStories/hello-gbdx/tree/master/sample-input) contains the two inputs required by hello-gbdx: (a) the directory [data_in](https://github.com/PlatformStories/hello-gbdx/tree/master/sample-input/data_in), the contents of which will be written to out.txt (in this example, this is simply the file data_file.txt) (b) the file [ports.json](https://github.com/PlatformStories/hello-gbdx/blob/master/sample-input/ports.json) which
+In this section, we will run this image with actual input data. Successfully doing this locally ensures that hello-gbdx will run on GBDX. hello-gbdx/sample-input in [this repo](https://github.com/PlatformStories/hello-gbdx/tree/master/sample-input) contains the two inputs required by hello-gbdx: (a) the directory [data_in](https://github.com/PlatformStories/hello-gbdx/tree/master/sample-input/data_in), the contents of which will be written to out.txt (in this example, this is simply the file data_file.txt) (b) the file [ports.json](https://github.com/PlatformStories/hello-gbdx/blob/master/sample-input/ports.json) which
 contains the message to be written to out.txt. Keep in mind that ports.json is automatically created by GBDX based on the task definition and the values of the string input ports provided by the user when the task is executed.
 
 Run hello-gbdx-docker-image and mount inputs to the container under mnt/work/input; this is where GBDX will place the inputs when the task is executed.
 
 ```bash
-docker run -v ~/path/to/hello-gbdx/sample-input:/mnt/work/input -it <your_username>/hello-gbdx-docker-image
+docker run --rm -v ~/path/to/hello-gbdx/sample-input:/mnt/work/input -it <your_username>/hello-gbdx-docker-image
 ```
 
 Note the important distinction between mounting data to the container and adding data to the image using the ADD command in the Dockerfile: when you exit the container, this data 'disappears' (i.e., it is not saved onto the image).
@@ -405,17 +405,11 @@ If the script completes successfully you shouldn't see anything written to STDOU
 
 ```bash
 # Navigate to the output directory, ensure that 'data_out' lives there
-root@3ad24b35e32e:/ cd mnt/work/output
-root@3ad24b35e32e:/ ls
->>> data_out/
-
-# Make sure that data_out contains the expected output file
-root@3ad24b35e32e:/ cd data_out
-root@3ad24b35e32e:/ ls
+root@3ad24b35e32e:/ ls mnt/work/output/data_out/
 >>> out.txt
 ```
 
-You can also make sure out.txt contains the expected content by typing ```vim out.txt```. The file should look like this:
+You can also make sure out.txt contains the expected content by typing ```cat out.txt```. You should see the following output:
 
 ```bash
 data_file.txt
@@ -467,7 +461,7 @@ The task definition is a [json file](https://github.com/PlatformStories/hello-gb
         {
             "type": "DOCKER",
             "properties": {
-                "image": "naldeborgh/hello-gbdx-docker-image"
+                "image": "platformstories/hello-gbdx-docker-image"
             },
             "command": "python /hello-gbdx.py",
             "isPublic": true
@@ -542,7 +536,7 @@ We review the five parts of this definition below.
     {
         "type": "DOCKER",
         "properties": {
-            "image": "naldeborgh/hello-gbdx-docker-image"
+            "image": "platformstories/hello-gbdx-docker-image"
         },
         "command": "python /hello-gbdx.py",
         "isPublic": true
@@ -958,7 +952,7 @@ The definition for rf-pool-classifier is provided below:
         {
             "type": "DOCKER",
             "properties": {
-                "image": "naldeborgh/rf-pool-classifier-docker-image"
+                "image": "platformstories/rf-pool-classifier-docker-image"
             },
             "command": "python /rf-pool-classifier.py",
             "isPublic": true
@@ -1268,7 +1262,7 @@ root@a28d273819ea:# exit
 docker commit -m 'install dependencies, add .theanorc' <container id> <your_username>/gbdx-gpu
 ```
 
-We now have the Docker image gbdx-gpu that can run Theano and Keras on a GPU. See [here](https://github.com/PlatformStories/create-task/tree/master/train-cnn/train-cnn-build) for how to build this image with a DcockerFile. In the following section, we will create a GBDX task that trains a CNN classifier using the GPU.
+We now have the Docker image gbdx-gpu that can run Theano and Keras on a GPU. See [here](https://github.com/PlatformStories/train-cnn) for how to build this image with a DockerFile. In the following section, we will create a GBDX task that trains a CNN classifier using the GPU.
 
 
 ## Convolutional Neural Network
@@ -1278,7 +1272,7 @@ We are going to use the tools we created [above](#using-the-gpu) to create the t
 ![train_cnn_task.png]({{ site.baseurl }}/images/create-task/train_cnn_task.png)
 *Figure 5: Inputs and output of train-cnn.*
 
-train-cnn has a single directory input port [train_data](https://github.com/PlatformStories/create-task/tree/master/train-cnn/sample-input/train_data). The task expects to find the following two files within train_data:
+train-cnn has a single directory input port [train_data](https://github.com/PlatformStories/train-cnn/tree/master/sample-input/train_data). The task expects to find the following two files within train_data:
 
 - **X.npz**: Training images as a numpy array saved in [npz format](http://docs.scipy.org/doc/numpy/reference/generated/numpy.savez.html). The array should have the following dimensional ordering: (num_images, num_bands, img_rows, img_cols).
 - **y.npz**: Class labels corresponding to training images as a numpy array saved in npz format.
@@ -1493,14 +1487,14 @@ This image now has all of the libraries and scripts required by train-cnn. See [
 
 We will now test train-cnn-docker-image with sample input to ensure that train-cnn.py runs successfully AND that the GPU is utilized.
 
-ssh into the AWS GPU instance and clone [this repo](https://github.com/PlatformStories/create-task) so that the sample input is on the instance.
+ssh into the AWS GPU instance and clone [this repo](https://github.com/PlatformStories/train-cnn) so that the sample input is on the instance.
 
 ```bash
 # ssh into the instance
 ssh -i </path/to/key_pair> ubuntu@<your_instance_name>
 
 # clone create-task repo
-ubuntu@ip-00-000-00-000:~$ git clone https://github.com/PlatformStories/create-task
+ubuntu@ip-00-000-00-000:~$ git clone https://github.com/PlatformStories/train-cnn
 ```
 
 Pull train-cnn-docker-image from your DockerHub account onto the instance.
@@ -1513,7 +1507,7 @@ Run a container from train-cnn-docker-image. This is where testing on a GPU diff
 
 ```bash
 docker run `curl http://localhost:3476/v1.0/docker/cli` -v \
-    ~/PlatformStories/create-task/train-cnn/sample-input:/mnt/work/input/ \
+    ~/train-cnn/sample-input:/mnt/work/input/ \
     -it <your_username>/train-cnn-docker-image /bin/bash
 ```
 
@@ -1548,6 +1542,7 @@ Defining a task that runs on a GPU is very similar to defining regular tasks. Th
 ```json
 {
     "name": "train-cnn",
+    "version": "0.0.1",
     "description": "Train a convolutional neural network classifier on the MNIST data set.",
     "properties": {
         "isPublic": true,
@@ -1583,7 +1578,7 @@ Defining a task that runs on a GPU is very similar to defining regular tasks. Th
         {
             "type": "DOCKER",
             "properties": {
-                "image": "naldeborgh/train-cnn-docker-image",
+                "image": "platformstories/train-cnn-docker-image",
                 "domain": "nvidiagpu"
             },
             "command": "python /train-cnn.py",
@@ -1591,7 +1586,6 @@ Defining a task that runs on a GPU is very similar to defining regular tasks. Th
         }
     ]
 }
-
 ```
 
 Now all we have to do is register train-cnn; follow the same steps as for hello-gbdx and rf-pool-classifier.
@@ -1612,7 +1606,7 @@ import uuid
 
 gbdx = Interface()
 
-input_location = 's3://gbd-customer-data/58600248-2927-4523-b44b-5fec3d278c09/platform-stories/create-task/train-cnn'
+input_location = 's3://gbd-customer-data/58600248-2927-4523-b44b-5fec3d278c09/platform-stories/train-cnn'
 ```
 
 Create a cnn_task object and specify the inputs.
