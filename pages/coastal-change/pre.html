@@ -1,70 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Cape cod water gains and losses</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
-    <script src="https://cdn.auth0.com/js/lock/10.3/lock.min.js"></script>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js" integrity="sha256-8E6QUcFg1KTnpEU8TFGhpTGHw5fJqB9vCms3OhAYLqw=" crossorigin="anonymous"></script> -->
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css' rel='stylesheet' />
 
     <style>
-          body {
-              padding: 0;
-              margin: 0;
-          }
-          html, body, #mapid {
-              height: 100%;
-              width: 100%;
-          }
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
     </style>
-
 </head>
-
 <body>
-<div id="mapid"></div>
-<script>
-// Validate the user's token.
-var lock = new Auth0Lock('lUHFRPH8sqWDyoKruYmRljkSHqnwI0hm', 'digitalglobe-platform.auth0.com');
-lock.getProfile(localStorage.getItem('idToken') || null, function(error, profile) {
-    if (error) {
-        // Handle error
-        localStorage.setItem('desiredUrlAfterAuth', window.location);
-        window.location = 'https://platformstories.github.io/pages/login.html';
-        return;
+
+<style type='text/css'>
+    #info {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        margin: 0px auto;
+        width: 35%;
+        padding: 10px;
+        border: none;
+        border-radius: 3px;
+        font-size: 12px;
+        text-align: center;
+        color: #222;
+        background: #fff;
     }
+</style>
+<div id='map'></div>
+<pre id='info'></pre>
+<script>
+
+mapboxgl.accessToken = 'pk.eyJ1IjoibmFsZGVib3JnaCIsImEiOiJjaXc2ejFpYjYwMGM3Mm9ta3l6OHN0bTU5In0.-OCFh3DWXZaAq0AHlgj_Og';
+
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/mapbox/streets-v9', //stylesheet location
+    center: [-70.00, 41.67], // starting position
+    zoom: 12 // starting zoom
 });
-</script>
-<script type="application/javascript">
 
-  var maxZoom = 20;
-  var minZoom = 11;
-  var tmsRootUrl = 'http://idaho.geobigdata.io/v1/'
-  var mymap = L.map('mapid');
-  var token = localStorage.getItem('idToken');
+map.on('load', function() {
+    map.addSource('coastal-change-pre', {
+        'type': 'raster',
+        'url': 'mapbox://platformstories.coastal-change-pre',
+        'tileSize': 256
+    });
 
-  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw', {maxZoom: maxZoom,
-              attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-              '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-              'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-              id: 'mapbox.streets'
-             }).addTo(mymap);
+    map.addLayer({
+        'id': 'coastal-change-pre',
+        'type': 'raster',
+        'source': 'coastal-change-pre'
+    });
+});
 
-  function addLayerToMap(bucketName, imageId, opacity, bands, isBaseLayer) {
-
-    var tmsUrl = tmsRootUrl+"tile/"+bucketName+'/'+imageId+'/{z}/{x}/{y}?bands='+bands+'&token='+token;
-
-    var tmsLayer = new L.TileLayer(tmsUrl, {minZoom: minZoom, maxZoom: maxZoom});
-    tmsLayer.isBaseLayer=isBaseLayer;
-    tmsLayer.setOpacity(opacity);
-    mymap.addLayer(tmsLayer);
-  }
-
-
-  addLayerToMap('platform-stories','0a3e570e-2545-4dae-ae89-37d78f8370c7', 1.0, '4,2,1', false)  //cape cod pre
-  mymap.setView([41.67, -70.00], minZoom);
+map.addControl(new mapboxgl.NavigationControl());
 
 </script>
+
 </body>
 </html>

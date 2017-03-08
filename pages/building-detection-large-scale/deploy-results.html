@@ -71,16 +71,13 @@ map.on('load', function() {
         "type": "line",
         "source": "buildings",
         "source-layer": "building-detection-ls-grid-deploy",
-        "layout": {
-            "visibility": "visible"
-        },
         "paint": {
             "line-color": "#00ff00",
             "line-width": 1
         },
         "filter": [">", "certainty", 0.975]
     });
-    
+
 });
 
 map.addControl(new mapboxgl.NavigationControl());

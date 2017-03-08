@@ -21,7 +21,7 @@ We'll demonstrate how we used deep learning on GBDX to identify swimming pools i
 New South Wales has [a significantly higher average annual income](http://www.abs.gov.au/ausstats/abs@.nsf/mf/5673.0.55.003) compared to South Australia. Given the installation and maintenance costs of a swimming pool, their number could be a potential indicator of economic health!
 
 ![properties.png]({{ site.baseurl }}/images/swimming-pools/properties.png)
-*A sample of properties. Green/red indicate presence/absence of pool.*
+*Property boundaries in Adelaide. Green/red indicate presence/absence of pool.*
 
 ## How
 
@@ -32,14 +32,18 @@ Our GBDX workflow is shown in the following figure.
 
 ### Preprocessing
 
-The workflow begins with the file [properties.geojson](https://github.com/PlatformStories/PlatformStories.github.io/blob/master/pages/swimming-pools/properties.geojson). This file contains a collection of polygons in (longitude, latitude) coordinates, each representing a property. Each polygon has two attributes: an image_id, which determines the DG catalog id of the satellite image corresponding to that polygon, and a feature_id, which is simply a number that uniquely identifies that property. This particular file only contains properties from the image 1040010014800C00, which is a cloudless WV03 image over Adelaide, Australia. You can see this image [here]({{ site.baseurl}}/pages/swimming-pools/adelaide.html) by entering your GBDX credentials when prompted.
-You can also view the image thumbnail by searching for 1040010014800C00 [here](https://discover.digitalglobe.com/) and navigating to Adelaide using the map.
+The workflow begins with the file [properties.geojson](https://github.com/PlatformStories/PlatformStories.github.io/blob/master/pages/swimming-pools/properties.geojson). This file contains a collection of polygons in (longitude, latitude) coordinates, each representing a property. Each polygon has two attributes: an image_id, which determines the DG catalog id of the satellite image corresponding to that polygon, and a feature_id, which is simply a number that uniquely identifies that property. In this example, the file only contains properties from a single WV03 image over Adelaide, Australia, with catalog id 1040010014800C00.
 
 The main idea is to label a small percentage of the property parcels using [crowdsourcing](http://www.tomnod.com/) in order to create a training set [train.geojson](https://github.com/PlatformStories/PlatformStories.github.io/blob/master/pages/swimming-pools/train.geojson). We then use train.geojson to train a CNN-based classifier to identify the presence of a swimming pool in each of the remaining unlabeled properties of properties.geojson (referred to as [target.geojson](https://github.com/PlatformStories/PlatformStories.github.io/blob/master/pages/swimming-pools/target.geojson)). For object classification at a continental or global scale this procedure is a must; it would be virtually impossible to label millions of properties manually in a reasonable amount of time.
 
-Before executing the workflow, the raw image has to be ordered from the factory and processed into a format that is usable by a machine learning algorithm. The last part is trickier than it sounds. We lovingly refer to it as UGHLi: Undifferentiated Geospatial Heavy Lifting. In this example, it involves orthorectification, atmospheric compensation, pansharpening and dynamic range adjustment; all this can be achieved with a single GBDX task [AOP_Strip_Processor](http://gbdxdocs.digitalglobe.com/docs/advanced-image-preprocessor). For the purpose of this example, the UGHLi'ed image already sits in an S3 bucket.
+Before executing the workflow, the raw image has to be ordered from the factory and processed into a format that is viewable and also usable by a machine learning algorithm. The last part is trickier than it sounds. We lovingly refer to it as UGHLi: Undifferentiated Geospatial Heavy Lifting. In this example, it involves orthorectification, atmospheric compensation, pansharpening and dynamic range adjustment; all this can be achieved with a single GBDX task, [AOP_Strip_Processor](http://gbdxdocs.digitalglobe.com/docs/advanced-image-preprocessor). You can explore the image below or click [here]({{ site.baseurl }}/pages/swimming-pools/adelaide.html) for a full page view.
 
-### Workflow Inputs
+{% raw %}
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="800" height="800" src="../pages/swimming-pools/adelaide.html"></iframe>
+{% endraw %}
+
+
+### Workflow inputs
 
 The workflow requires three inputs.
 
@@ -54,10 +58,7 @@ The workflow requires three inputs.
   ![target_geojson.png]({{ site.baseurl }}/images/swimming-pools/target_geojson.png)  
   *A sample of properties to be classified.*
 
-- The image(s) which the polygons in the training and target data overlay, in [GeoTiff](https://en.wikipedia.org/wiki/GeoTIFF) format. In this example, this is one image of Adelaide, 1040010014800C00.tif.
-
-  ![strip.png]({{ site.baseurl }}/images/swimming-pools/strip.png)  
-  *Adelaide image strip, courtesy of WorldView-03.*
+- The UGHLi'd image(s) which the polygons in the training and target data overlay, in [GeoTiff](https://en.wikipedia.org/wiki/GeoTIFF) format. In this example, it's the Adelaide image.   
 
 ### Tasks
 
@@ -78,7 +79,7 @@ The workflow involves two tasks.
   *deploy-cnn-classifier takes a model, target.geojson and imagery, and produces classified.geojson.*
 
 
-### Workflow Outputs
+### Workflow outputs
 
 The workflow has two outputs.
 
@@ -96,13 +97,10 @@ The workflow has two outputs.
 
   More information on the model architecture can be found [here](https://github.com/DigitalGlobe/mltools/tree/master/examples/polygon_classify_cnn).
 
-- The file classified.geojson which includes all the properties in target.geojson classified into 'Swimming pool' and 'No swimming pool'.
-
-  ![classified.png]({{ site.baseurl }}/images/swimming-pools/classified.png)  
-  *A sample of properties in classified.geojson.*
+- The file classified.geojson which includes all the properties in target.geojson classified in 'Swimming pool' and 'No swimming pool'.
 
 
-## Executing the Workflow
+## Executing the workflow
 
 We'll now execute the workflow in gbdxtools. Start an iPython terminal, create a GBDX interface, and get the input location information:
 
@@ -194,14 +192,13 @@ gbdx.s3.download(join(output_location, 'trained-model/test_report.txt'), 'traine
 gbdx.s3.download(join(output_location, 'classified-geojson'), 'classified-geojson')
 ```
 
-## Visualizing the Results
+## Visualizing the results
 
-You can visualize the classification results [here]({{ site.baseurl }}/pages/swimming-pools/adelaide-classified-properties.html). Green/red polygons indicate presence/absence of pool. Clicking on each polygon shows the corresponding feature id and assigned classification.  
+We [uploaded](https://github.com/PlatformStories/upload-to-mapbox) the Adelaide image and classified.geojson to our Mapbox account, and then used the [Mapbox GL Javascript library](https://www.mapbox.com/mapbox-gl-js/api/) to display the raster and vector tilesets. Here are the results (full page view [here]({{ site.baseurl }}/pages/swimming-pools/adelaide-classified-properties.html)). Green/red polygons indicate presence/absence of pool.
 
-![result_screenshot.png]({{ site.baseurl }}/images/swimming-pools/result_screenshot.png)  
-*Sample results of our workflow. Properties containing pools are outlined in green.*
-
-For this visualization, we used the Mapbox [geojson-vt](https://github.com/mapbox/geojson-vt) library to slice classified.geojson into vector tiles on the fly. Pretty cool!
+{% raw %}
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="800" height="800" src="../pages/swimming-pools/adelaide-classified-properties.html"></iframe>
+{% endraw %}  
 
 
 ## Discussion
