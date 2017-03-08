@@ -637,7 +637,7 @@ In this example, we will create the task rf-pool-classifier that trains a [rando
 ![rf_img.png]({{ site.baseurl }}/images/create-task/rf_img.png)
 *Figure 4: Inputs and output of rf-pool-classifier.*
 
-rf-pool-classifier has two directory input ports: geojson and image. Within geojson and image, the task expects to find a file train.geojson, which contains labeled polygons from both classes, and a tif image file from which the task will extract the pixels corresponding to each polygon, respectively (Figure 4). The task also has the input string port n_estimators that determines the number of trees in the random forest; specifying a value is optional and the default is '100'. The task produces a trained model in [pickle](https://docs.python.org/2/library/pickle.html) format, which is saved in the S3 location specified by the output port trained_classifier.
+[rf-pool-classifier](https://github.com/PlatformStories/rf-pool-classifier) has two directory input ports: geojson and image. Within geojson and image, the task expects to find a file train.geojson, which contains labeled polygons from both classes, and a tif image file from which the task will extract the pixels corresponding to each polygon, respectively (Figure 4). The task also has the input string port n_estimators that determines the number of trees in the random forest; specifying a value is optional and the default is '100'. The task produces a trained model in [pickle](https://docs.python.org/2/library/pickle.html) format, which is saved in the S3 location specified by the output port trained_classifier.
 
 ### The Code
 
@@ -681,7 +681,7 @@ class RfPoolClassifier(GbdxTaskInterface):
         os.makedirs(output_dir)
 
         # Get training data from the geojson input
-        train_rasters, _, train_labels = de.get_data('train.geojson', return_labels=True, mask=True)
+        train_rasters, train_labels = de.get_data('train.geojson', return_labels=True, mask=True)
 
         # Compute features from each training polygon
         compute_features = features.pool_basic
@@ -743,7 +743,7 @@ Using the ```mltools.data_extractors``` modules, the pixels corresponding to eac
 
 ```python
 # Get training data from the geojson input
-train_rasters, _, train_labels = de.get_data('train.geojson', return_labels=True, mask=True)
+train_rasters, train_labels = de.get_data('train.geojson', return_labels=True, mask=True)
 
 # Compute features from each training polygon
 compute_features = features.pool_basic
@@ -805,7 +805,7 @@ We are now ready to copy rf-pool-classifier.py and gbdx_task_interface.py to rf-
 
 ```bash
 # Run Docker in detached mode
-docker run -itd <your_username>/rf-pool-classifier-docker-image
+docker run --rm -itd <your_username>/rf-pool-classifier-docker-image
 
 # Copy the script to the container and commit the changes
 docker cp rf-pool-classifier.py <container_id>:/
@@ -872,7 +872,7 @@ from gbdxtools import Interface
 from os.path import join
 gbdx = Interface()
 
-input_location = 's3://gbd-customer-data/58600248-2927-4523-b44b-5fec3d278c09/platform-stories/create-task/rf-pool-classifier'
+input_location = 's3://gbd-customer-data/58600248-2927-4523-b44b-5fec3d278c09/platform-stories/rf-pool-classifier'
 
 # download the image strip (will take a couple minutes)
 gbdx.s3.download(join(input_location, 'image'), './image/')
@@ -887,7 +887,7 @@ exit
 Run rf-pool-classifier-docker-image with rf_pool_classifier_test mounted to the input port.
 
 ```bash
-docker run -v ~/<full/path/to/rf_pool_classifier_test>:/mnt/work/input -it <your_username>/rf-pool-classifier-docker-image
+docker run --rm -v ~/<full/path/to/rf_pool_classifier_test>:/mnt/work/input -it <your_username>/rf-pool-classifier-docker-image
 ```
 
 Within the container run rf-pool-classifier.py.
@@ -903,7 +903,7 @@ root@91d9d5cd9570:/ ls mnt/work/output/trained_classifier
 >>> classifier.pkl
 ```
 
-You can now define and register rf-pool-classifier!
+You may now exit the container and define and register rf-pool-classifier!
 
 ### Task Definition
 
@@ -997,11 +997,10 @@ rf_task.inputs.n_estimators = "1000"
 Create a single-task workflow object and define where the output data should be saved.
 
 ```python
-# set output location to platform-stories/trial-runs/random_str within your bucket/prefix
+workflow = gbdx.Workflow([rf_task])
 random_str = str(uuid.uuid4())
 output_location = join('platform-stories/trial-runs', random_str)
 
-workflow = gbdx.Workflow([rf_task])
 workflow.savedata(rf_task.outputs.trained_classifier, output_location)
 ```
 
