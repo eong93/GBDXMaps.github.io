@@ -17,7 +17,9 @@ The cherry on the cake is to use the crowd to [weed out the errors of the machin
 In the context of a recent large-scale population mapping campaign, we were faced with the usual question. Find buildings with the crowd, or train a machine to do it?
 This led to another question: can the [convolutional neural network (CNN)](https://github.com/DigitalGlobe/mltools/blob/master/examples/polygon_classify_cnn/README.md) that we trained to find swimming pools in Adelaide be trained to detect buildings in Nigeria?
 
-![villages.png]({{ site.baseurl }}/images/building-detection/villages.png)
+{% raw %}
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="800" height="800" src="../pages/building-detection/diffa.html"></iframe>
+{% endraw %}
 *Population centers in Nigeria. Intensity of green corresponds to confidence in the presence of buildings.*
 
 ## How
