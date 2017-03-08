@@ -1258,7 +1258,7 @@ root@a28d273819ea:# exit
 docker commit -m 'install dependencies, add .theanorc' <container id> <your_username>/gbdx-gpu
 ```
 
-We now have the Docker image gbdx-gpu that can run Theano and Keras on a GPU. See [here](https://github.com/PlatformStories/train-cnn) for how to build this image with a DockerFile. In the following section, we will create a GBDX task that trains a CNN classifier using the GPU.
+We now have the Docker image gbdx-gpu that can run Theano and Keras on a GPU. See [here](https://github.com/PlatformStories/train-cnn/blob/master/Dockerfile) for how to build this image with a DockerFile. In the following section, we will create a GBDX task that trains a CNN classifier using the GPU.
 
 
 ## Convolutional Neural Network
@@ -1477,7 +1477,7 @@ docker commit -m 'add train-cnn scripts' <container_id> <your_username>/train-cn
 docker push <your_username>/train-cnn-docker-image
 ```
 
-This image now has all of the libraries and scripts required by train-cnn. See [here](https://github.com/PlatformStories/create-task/tree/master/train-cnn/train-cnn-build) to see a sample build of train-cnn-docker-image using a DockerFile. Continue on to the [next section](#testing-the-train-cnn-image) to test the image using the GPU instance created [above](#setting-up-a-device-to-test-your-gpu-image).
+This image now has all of the libraries and scripts required by train-cnn. See [here](https://github.com/PlatformStories/train-cnn/) to see a sample build of train-cnn-docker-image using a DockerFile. Continue on to the [next section](#testing-the-train-cnn-image) to test the image using the GPU instance created [above](#setting-up-a-device-to-test-your-gpu-image).
 
 ### Testing the Docker Image
 
@@ -1502,9 +1502,9 @@ docker pull <your_username>/train-cnn-docker-image
 Run a container from train-cnn-docker-image. This is where testing on a GPU differs from our previous tests: you must specify which GPU devices the container should use, defined by ```curl http://localhost:3476/v1.0/docker/cli```.
 
 ```bash
-docker run `curl http://localhost:3476/v1.0/docker/cli` -v \
-    ~/train-cnn/sample-input:/mnt/work/input/ \
-    -it <your_username>/train-cnn-docker-image /bin/bash
+docker run --rm `curl http://localhost:3476/v1.0/docker/cli` -v \
+    ~/train-cnn/sample-input:/mnt/work/input/ -it \
+    <your_username>/train-cnn-docker-image /bin/bash
 ```
 
 Run train-cnn.py. In this step we confirm that the container is using the GPU and that the script runs without errors.
@@ -1617,11 +1617,10 @@ cnn_task.inputs.nb_epoch = '15'
 Create a single-task workflow object and specify where the output data should be saved.
 
 ```python
-# set output location to platform-stories/trial-runs/random_str within your bucket/prefix
+workflow = gbdx.Workflow([cnn_task])
 random_str = str(uuid.uuid4())
 output_location = join('platform-stories/trial-runs', random_str)
 
-workflow = gbdx.Workflow([cnn_task])
 workflow.savedata(cnn_task.outputs.trained_model, output_location)
 ```
 
