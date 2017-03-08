@@ -566,16 +566,13 @@ gbdx.task_registry.register(json_filename = 'hello-gbdx-definition.json')
 >>> u'hello-gbdx:0.0.1 has been submitted for registration.'
 ```
 
-The task will now migrate to from DockerHub to AWS. This process takes up to 30 minutes, and the task will not be available until migration is complete. There's a good chance that hello-gbdx:0.0.1 already exists in the registry. You can try using a different name after appropriately modifying the definition.
-
-To check if the migration has finished search for the task in the registry list as follows:
+ There's a good chance that hello-gbdx:0.0.1 already exists in the registry. You can try using a different name after appropriately modifying the definition. The task takes 10-15 minutes to register. You may check on the status of the registration as follows:
 
 ```python
+# If output is True the task has successfully registered. If False, try again in a couple minutes.
 'hello-gbdx:0.0.1' in gbdx.task_registry.list()
 >>> True
 ```
-
-If the task takes over 30 minutes to migrate it fails and you will have to re-register with a higher version number.
 
 Congratulations, you have just registered hello-gbdx! You can run it with sample data as follows. Open an ipython terminal and copy in the following:
 
