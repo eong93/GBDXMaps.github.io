@@ -486,7 +486,7 @@ We review the five parts of this definition below.
 ```
 
 - <b>name</b>: The task name.
-- <b>version</b>: The task [version number](https://gbdxdocs.digitalglobe.com/docs/how-to-version-a-task). Note that this must be incremented every time the task is updated and re-registered.
+- <b>version</b>: The task [version number](https://gbdxdocs.digitalglobe.com/docs/how-to-version-a-task). Note that this must be incremented every time the task's docker image is updated for changes to take effect.
 - <b>description</b>: A brief, high-level description of the task.
 - <b>isPublic</b>: A boolean. If true, the task is publicly available.
 - <b>timeout</b>: Amount of time (in seconds) for the task to run before it is terminated by the platform. The max value is 36000 (i.e., 10 hours).  
