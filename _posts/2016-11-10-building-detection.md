@@ -24,21 +24,21 @@ This led to another question: can the [convolutional neural network (CNN)](https
 
 ## How
 
-The area of interest consists of 9 WorldView-2 and 2 GeoEye-1 image strips collected between January 2015 and May 2016 over northeastern Nigeria, close to as well as on the border with Niger and Cameroon. We picked 4 WorldView-2 strips, divided them in square chips of side 125m (about 250 pixels at sensor resolution) and asked our crowd to label them as 'Buildings' or 'No Buildings'. The output of the crowdsourcing campaign is the file train.geojson which contains the labeled chip geometries (a small sample [here](https://github.com/PlatformStories/building-detection/blob/master/train.geojson)).
+The area of interest consists of 9 WorldView-2 and 2 GeoEye-1 image strips collected between January 2015 and May 2016 over northeastern Nigeria, close to as well as on the border with Niger and Cameroon. We picked 4 WorldView-2 strips, divided them in square chips of side 125m (about 250 pixels at sensor resolution) and asked our crowd to label them as 'Buildings' or 'No Buildings'. The output of the crowdsourcing campaign is the file train.geojson which contains the labeled chip geometries (a small sample [here](https://github.com/PlatformStories/PlatformStories.github.io/blob/master/pages/building-detection/train.geojson)).
 
-As shown in the following diagram, train.geojson and the image GeoTiff files are given as input to [train-cnn-classifier](https://github.com/PlatformStories/swimming-pools/blob/master/docs/train-cnn-classifier.md) which produces a trained Keras model. The images are orthorectified, atmospherically compensated and pansharpened using our [image preprocessor](https://gbdxdocs.digitalglobe.com/docs/advanced-image-preprocessor).
+As shown in the following diagram, train.geojson and the image GeoTiff files are given as input to [train-cnn-classifier](https://github.com/PlatformStories/train-cnn-classifier) which produces a trained Keras model. The images are orthorectified, atmospherically compensated and pansharpened using our [image preprocessor](https://gbdxdocs.digitalglobe.com/docs/advanced-image-preprocessor).
 
 ![train_wf.png]({{ site.baseurl }}/images/building-detection/train_wf.png)  
 *Training on a subset of the strips.*
 
 With a trained model at hand, we can detect buildings in the remaining 7 images. This involves dividing each image
-in chips of the same size as those that we trained on to create target.geojson (small sample [here](https://github.com/PlatformStories/building-detection/blob/master/target.geojson))
-and passing target.geojson and the image to [deploy-cnn-classifier](https://github.com/PlatformStories/swimming-pools/blob/master/docs/deploy-cnn-classifier.md).
+in chips of the same size as those that we trained on to create target.geojson (small sample [here](https://github.com/PlatformStories/PlatformStories.github.io/blob/master/pages/building-detection/target.geojson))
+and passing target.geojson and the image to [deploy-cnn-classifier](https://github.com/PlatformStories/deploy-cnn-classifier).
 
 ![deploy_wf.png]({{ site.baseurl }}/images/building-detection/deploy_wf.png)  
 *Deploying on the remainder of the strips.*
 
-The output of deploy-cnn-classifier is classified.geojson (small sample [here](https://github.com/PlatformStories/building-detection/blob/master/classified.geojson)),
+The output of deploy-cnn-classifier is classified.geojson (small sample [here](https://github.com/PlatformStories/PlatformStories.github.io/blob/master/pages/building-detection/classified.geojson)),
 which contains all the chips in target.geojson classified as 'Buildings' or 'No Buildings'
 and a confidence score on each classification.
 
