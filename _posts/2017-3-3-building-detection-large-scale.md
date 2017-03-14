@@ -47,7 +47,14 @@ The inputs to the workflow are:
 + train.geojson, which includes the geometry and class name of each training chip;
 + a collection of target.geojson files, each including the geometries of the chips covering part of the grid.
 
-The task [chip-from-vrt](https://github.com/PlatformStories/chip-from-vrt) extracts chips from the mosaic for training and deploying. It does this by creating a [vrt file](http://www.gdal.org/gdal_vrttut.html) which specifies the full path to the S3 location of each tile in the mosaic using the GDAL virtual filesystem  ```/vsis3/```. It then extracts the chips defined by the geometries in the input geojson by calling [gdal_translate](http://www.gdal.org/gdal_translate.html) on the vrt, and saves then to a user-defined bucket.
+The task [chip-from-vrt](https://github.com/PlatformStories/chip-from-vrt)
+extracts chips from the mosaic for training and deploying. It does this by
+creating a [vrt file](http://www.gdal.org/gdal_vrttut.html) which specifies the
+full path to the S3 location of each tile in the mosaic using the GDAL virtual
+filesystem  ```/vsis3/```. It then extracts the chips defined by the geometries
+in the input geojson by calling
+[gdal_translate](http://www.gdal.org/gdal_translate.html) on the vrt, and saves
+them to a user-defined bucket.
 This process allows the task to pull chips remotely from the mosaic tiles without actually mounting the tiles onto the GBDX worker executing the task.
 
 ![chip-from-vrt.png]({{ site.baseurl }}/images/building-detection-large-scale/chip-from-vrt.png)  
