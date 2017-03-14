@@ -13,6 +13,4 @@ GBDX Stories contains examples where GBDX is deployed to solve compelling
 geospatial problems. Our goal is to help you get started on GBDX, and
 to inspire and guide you to create your own algorithms and be part of our exciting Ecosystem.
 
-**Get in touch**
-
-[GBDX Stories](mailto:kostas.stamatiou@digitalglobe.com)
+[Get in touch](mailto:kostas.stamatiou@digitalglobe.com)
