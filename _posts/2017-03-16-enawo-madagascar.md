@@ -11,11 +11,11 @@ DigitalGlobe has [released imagery](http://blog.digitalglobe.com/industry/imager
 Recently, we implemented an algorithm which uses 8-band, atmospherically compensated imagery in order to detect **impure water**, and added the new capability to our proprietary image analysis and processing software Protogen. Flooding events
 involve an overflowing of large amounts of water over what normally constitutes dry land, consisting of soil and materials used in built-up areas. The resulting flood water is 'dirty' and as such does not have the spectral signature of normal, 'clean' water. The algorithm takes into account the characteristics of impure water to produce a mask, i.e., a binary image where white corresponds to impure water and black to the background.
 
-We ran the new algorithm on GBDX, on a small collection of images captured by our sensors a few days after the cyclone made landfall over Maroantsetra and Ambohitralanana.
+We ran the new algorithm on GBDX, on a small collection of images captured by GeoEye-1 a few days after the cyclone made landfall over Maroantsetra and Ambohitralanana.
 
 | **location** | **catalog id** | **sensor** | **date** |
 | :-------- |:-------- | :-------- | :-------- |
-| Maroantsetra | 1050010008989C00 | WorldView-3 | 03/11/17 |
+| Maroantsetra | 1050010008989C00 | GeoEye-1 | 03/11/17 |
 | Ambohitralanana coast | 1050010008989A00 | GeoEye-1 | 03/11/17 |
 | Ambohitralanana inland | 1050010008989B00 | GeoEye-1 | 03/11/17 |
 
