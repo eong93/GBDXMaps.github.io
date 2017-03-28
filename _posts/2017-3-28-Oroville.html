@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Lake Oroville</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<style>
+    #menu {
+        background: #fff;
+        position: absolute;
+        z-index: 1;
+        top: 10px;
+        right: 10px;
+        border-radius: 3px;
+        width: 120px;
+        border: 1px solid rgba(0,0,0,0.4);
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    #menu a {
+        font-size: 13px;
+        color: #404040;
+        display: block;
+        margin: 0;
+        padding: 0;
+        padding: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0,0,0,0.25);
+        text-align: center;
+    }
+
+    #menu a:last-child {
+        border: none;
+    }
+
+    #menu a:hover {
+        background-color: #f8f8f8;
+        color: #404040;
+    }
+
+    #menu a.active {
+        background-color: #3887be;
+        color: #ffffff;
+    }
+
+    #menu a.active:hover {
+        background: #3074a4;
+    }
+</style>
+
+<nav id="menu"></nav>
+<div id="map"></div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiZW9uZzkzIiwiYSI6IjhjNzZmMTNlNzUyMmM4NjAyMjg2Yjg5OThiNGQ2YjhkIn0.j6EujoTbVdlMm_aI5F-LcA';
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v9',
+    zoom: 11,
+    center: [-121.434, 39.61]
+});
+
+
+map.on('load', function() {
+
+    map.addLayer({
+        "id": "2013_PS",
+        "type": "raster",
+        "source": {
+            type: 'raster',
+            url: 'mapbox://eong93.bdkkdie0'
+        },
+        "source-layer": "2013_PS_8_edit-3j0wov"
+        
+    });
+
+    map.addLayer({
+        "id": "2013_vector",
+        "type": "line",
+        "source": {
+            type: 'vector',
+            url: 'mapbox://eong93.cj0ju4x3001yu32mejhs831yh-1vk2e'
+        },
+        "source-layer": "year2013_tile",
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#1E90FF",
+            "line-width": 2
+        }
+    });
+
+    map.addLayer({
+        "id": "2014_PS",
+        "type": "raster",
+        "source": {
+            type: 'raster',
+            url: 'mapbox://eong93.5j8s3jwy'
+        },
+        "source-layer": "2014_PS_8-5jgir6"
+        
+    });
+
+    map.addLayer({
+        "id": "2014_vector",
+        "type": "line",
+        "source": {
+            type: 'vector',
+            url: 'mapbox://eong93.5azl54xk'
+        },
+        "source-layer": "year2014-5j5lyw",
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#1E90FF",
+            "line-width": 2
+        }
+    });
+
+    map.addLayer({
+        "id": "2015_PS",
+        "type": "raster",
+        "source": {
+            type: 'raster',
+            url: 'mapbox://eong93.4tng1o67'
+        },
+        "source-layer": "2015_PS_8-azy9le"
+        
+    });
+
+     map.addLayer({
+        "id": "2015_vector",
+        "type": "line",
+        "source": {
+            type: 'vector',
+            url: 'mapbox://eong93.3091i46r'
+        },
+        "source-layer": "year2015-07p8g9",
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#1E90FF",
+            "line-width": 2
+        }
+    });
+
+     map.addLayer({
+        "id": "2016_PS",
+        "type": "raster",
+        "source": {
+            type: 'raster',
+            url: 'mapbox://eong93.6e0dt7lc'
+        },
+        "source-layer": "2016_PS_8-7axi6e"
+        
+    });
+
+      map.addLayer({
+        "id": "2016_vector",
+        "type": "line",
+        "source": {
+            type: 'vector',
+            url: 'mapbox://eong93.2nfzv6zo'
+        },
+        "source-layer": "year2016-beyejh",
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#1E90FF",
+            "line-width": 2
+        }
+    });
+
+});
+
+toggleLayer(['2013_PS', '2013_vector'], '2013-7-21');
+toggleLayer(['2014_PS', '2014_vector'], '2014-7-24');
+toggleLayer(['2015_PS', '2015_vector'], '2015-7-27');
+toggleLayer(['2016_PS', '2016_vector'], '2016-7-29');
+
+function toggleLayer(ids, name) {
+    var link = document.createElement('a');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = name;
+
+    link.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        for (layers in ids){
+            // console.log(ids[layers]);
+        var visibility = map.getLayoutProperty(ids[layers], 'visibility');
+
+        if (visibility === 'visible') {
+            map.setLayoutProperty(ids[layers], 'visibility', 'none');
+            this.className = '';
+        } else {
+            this.className = 'active';
+            map.setLayoutProperty(ids[layers], 'visibility', 'visible');
+        }
+        }
+        
+    };
+
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+}
+</script>
+
+</body>
+</html>
