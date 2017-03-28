@@ -1,3 +1,3 @@
-# PlatformStories.github.io
+# GBDXMaps.github.io
 
-GBDX Stories web page.
+GBDX Maps web page.
